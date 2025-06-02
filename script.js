@@ -83,7 +83,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 newsTitle.textContent = `Noticia: ${result.filename.replace('.pdf', '').replace(/_/g, ' ')}`;
 
                 const pageLink = document.createElement('a');
-                pageLink.href = `${result.url}#page=${result.pageNumber}`;
+                const viewerBaseURL = 'https://destri13.github.io/Buscador-PDF/pdfjs/web/viewer.html';
+                pageLink.href = `${viewerBaseURL}?file=${encodeURIComponent(result.url)}#page=${result.pageNumber}`;
+
                 pageLink.target = "_blank"; // Abre el PDF en una nueva pestaña
                 pageLink.textContent = `Ver en página ${result.pageNumber}`;
 
