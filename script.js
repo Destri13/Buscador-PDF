@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 newsTitle.textContent = `Noticia: ${result.filename.replace('.pdf', '').replace(/_/g, ' ')}`;
 
                 const pageLink = document.createElement('a');
-                pageLink.href = `${result.url}#page=${result.pageNumber}`; // CORRECTED LINE: Enlace directo a la página exacta
+                pageLink.href = `<span class="math-inline">\{result\.url\}\#page\=</span>{result.pageNumber}`; // ¡ESTA ES LA LÍNEA CRÍTICA Y CORREGIDA!
                 pageLink.target = "_blank"; // Abre el PDF en una nueva pestaña
                 pageLink.textContent = `Ver en página ${result.pageNumber}`;
 
