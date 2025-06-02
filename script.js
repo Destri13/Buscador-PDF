@@ -73,28 +73,26 @@ document.addEventListener('DOMContentLoaded', () => {
             return parseInt(a.pageNumber) - parseInt(b.pageNumber);
         });
 
-        // Mostrar los resultados en la interfaz
-        if (results.length > 0) {
-            results.forEach(result => {
-                const resultItem = document.createElement('div');
-                resultItem.classList.add('result-item');
+// Mostrar los resultados en la interfaz
+if (results.length > 0) {
+    results.forEach(result => {
+        const resultItem = document.createElement('div');
+        resultItem.classList.add('result-item');
 
-                const newsTitle = document.createElement('h3');
-                newsTitle.textContent = `Noticia: ${result.filename.replace('.pdf', '').replace(/_/g, ' ')}`;
+        const newsTitle = document.createElement('h3');
+        newsTitle.textContent = `Noticia: ${result.filename.replace('.pdf', '').replace(/_/g, ' ')}`;
 
-                const pageLink = document.createElement('a');
-                const viewerBaseURL = 'https://destri13.github.io/Buscador-PDF/pdfjs/web/viewer.html';
-                pageLink.href = `${viewerBaseURL}?file=${encodeURIComponent(result.url)}#page=${result.pageNumber}`;
+        const pageLink = document.createElement('a');
+        pageLink.href = `${result.url}#page=${result.pageNumber}`;  // Enlace directo al PDF con página
+        pageLink.target = "_blank";  // Abrir en nueva pestaña
+        pageLink.textContent = `Ver en página ${result.pageNumber}`;
 
-                pageLink.target = "_blank"; // Abre el PDF en una nueva pestaña
-                pageLink.textContent = `Ver en página ${result.pageNumber}`;
-
-                resultItem.appendChild(newsTitle);
-                resultItem.appendChild(pageLink);
-                searchResultsDiv.appendChild(resultItem);
-            });
-        } else {
-            noResultsMessage.style.display = 'block'; // Mostrar mensaje de no resultados
+        resultItem.appendChild(newsTitle);
+        resultItem.appendChild(pageLink);
+        searchResultsDiv.appendChild(resultItem);
+    });
+} else {
+    noResultsMessage.style.display = 'block';  // Mostrar mensaje de no resultados
         }
     }
 
