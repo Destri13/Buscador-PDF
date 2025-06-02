@@ -14,14 +14,15 @@ document.addEventListener('DOMContentLoaded', () => {
         searchResultsDiv.innerHTML = ''; // Limpiar resultados anteriores
 
         try {
-            const response = await fetch('search_index.json');
+            // La ruta del archivo JSON, asumiendo que está en la misma carpeta que script.js
+            const response = await fetch('search_index.json'); 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             searchIndex = await response.json();
             loadingMessage.style.display = 'none'; // Ocultar mensaje de carga
             console.log("Índice de búsqueda cargado con éxito.");
-            searchInput.focus();
+            searchInput.focus(); // Opcional: enfocar el input de búsqueda una vez cargado
         } catch (error) {
             loadingMessage.textContent = 'Error al cargar el índice de búsqueda. Por favor, recarga la página o inténtalo más tarde.';
             loadingMessage.style.color = 'red';
@@ -32,24 +33,29 @@ document.addEventListener('DOMContentLoaded', () => {
     // Función para realizar la búsqueda
     function performSearch() {
         const query = searchInput.value.toLowerCase().trim();
-        searchResultsDiv.innerHTML = '';
-        noResultsMessage.style.display = 'none';
+        searchResultsDiv.innerHTML = ''; // Limpiar resultados anteriores
+        noResultsMessage.style.display = 'none'; // Ocultar mensaje de no resultados
 
         if (query.length === 0) {
             return;
         }
 
-        const results = [];
+        let foundResults = false;
+        const results = []; // Para almacenar resultados y luego ordenarlos/mostrarlos
 
+        // Recorre cada PDF en nuestro índice
         for (const pdfFilename in searchIndex) {
             const pdfData = searchIndex[pdfFilename];
             const pdfUrl = pdfData.url;
 
+            // Recorre cada página dentro del PDF
             for (const pageKey in pdfData.pages) {
                 const pageText = pdfData.pages[pageKey].toLowerCase();
-                const pageNumber = pageKey.replace('page_', '');
+                const pageNumber = pageKey.replace('page_', ''); // Extraer el número de página (ej. de "page_5" a "5")
 
+                // Si la palabra clave se encuentra en el texto de la página
                 if (pageText.includes(query)) {
+                    foundResults = true;
                     results.push({
                         filename: pdfFilename,
                         url: pdfUrl,
@@ -59,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Ordenar resultados
+        // Ordenar los resultados alfabéticamente por nombre de archivo, luego por número de página
         results.sort((a, b) => {
             if (a.filename !== b.filename) {
                 return a.filename.localeCompare(b.filename);
@@ -67,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return parseInt(a.pageNumber) - parseInt(b.pageNumber);
         });
 
+        // Mostrar los resultados en la interfaz
         if (results.length > 0) {
             results.forEach(result => {
                 const resultItem = document.createElement('div');
@@ -76,8 +83,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 newsTitle.textContent = `Noticia: ${result.filename.replace('.pdf', '').replace(/_/g, ' ')}`;
 
                 const pageLink = document.createElement('a');
-                pageLink.href = `pdfjs/web/viewer.html?file=${encodeURIComponent(result.url)}#page=${result.pageNumber}`;
-                pageLink.target = "_blank";
+                // Aquí el enlace usa la ruta relativa correcta para abrir con PDF.js en GitHub Pages
+                pageLink.href = `pdfjs/web/viewer.html?file=../noticias_pdf/${result.filename}#page=${result.pageNumber}`;
+                pageLink.target = "_blank"; // Abre el PDF en una nueva pestaña
                 pageLink.textContent = `Ver en página ${result.pageNumber}`;
 
                 resultItem.appendChild(newsTitle);
@@ -85,11 +93,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 searchResultsDiv.appendChild(resultItem);
             });
         } else {
-            noResultsMessage.style.display = 'block';
+            noResultsMessage.style.display = 'block'; // Mostrar mensaje de no resultados
         }
     }
 
-    // Listeners
+    // Event listeners para el botón y la tecla Enter
     searchButton.addEventListener('click', performSearch);
     searchInput.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
@@ -97,5 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Cargar el índice de búsqueda cuando la página se haya cargado
     loadSearchIndex();
 });
