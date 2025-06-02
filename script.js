@@ -5,13 +5,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadingMessage = document.getElementById('loadingMessage');
     const noResultsMessage = document.getElementById('noResultsMessage');
 
-    let searchIndex = {}; // Aquí se cargará nuestro índice JSON
+    let searchIndex = {}; // Índice JSON cargado
 
-    // Función asíncrona para cargar el índice JSON
+    // Cargar índice JSON
     async function loadSearchIndex() {
-        loadingMessage.style.display = 'block'; // Mostrar mensaje de carga
-        noResultsMessage.style.display = 'none'; // Asegurarse de que noResults esté oculto
-        searchResultsDiv.innerHTML = ''; // Limpiar resultados anteriores
+        loadingMessage.style.display = 'block';
+        noResultsMessage.style.display = 'none';
+        searchResultsDiv.innerHTML = '';
 
         try {
             const response = await fetch('search_index.json');
@@ -20,16 +20,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             searchIndex = await response.json();
             loadingMessage.style.display = 'none';
-            console.log("Índice de búsqueda cargado con éxito.");
             searchInput.focus();
+            console.log("Índice cargado correctamente");
         } catch (error) {
-            loadingMessage.textContent = 'Error al cargar el índice de búsqueda. Por favor, recarga la página o inténtalo más tarde.';
+            loadingMessage.textContent = 'Error al cargar índice. Recarga la página.';
             loadingMessage.style.color = 'red';
-            console.error('Error al cargar el índice de búsqueda:', error);
+            console.error('Error al cargar índice:', error);
         }
     }
 
-    // Función para realizar la búsqueda
+    // Buscar y mostrar resultados
     function performSearch() {
         const query = searchInput.value.toLowerCase().trim();
         searchResultsDiv.innerHTML = '';
@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // Ordenar resultados
         results.sort((a, b) => {
             if (a.filename !== b.filename) {
                 return a.filename.localeCompare(b.filename);
@@ -77,10 +78,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 newsTitle.textContent = `Noticia: ${result.filename.replace('.pdf', '').replace(/_/g, ' ')}`;
 
                 const pageLink = document.createElement('a');
-                const encodedURL = encodeURIComponent(`https://destri13.github.io/Buscador-PDF/noticias_pdf/${result.filename}`);
-                pageLink.href = `pdfjs/web/viewer.html?file=${encodedURL}#page=${result.pageNumber}`;
+                // Aquí arma URL absoluta al visor con el PDF remoto y página
+                const encodedPdfUrl = encodeURIComponent(result.url);
+                pageLink.href = `pdfjs/web/viewer.html?file=${encodedPdfUrl}#page=${result.pageNumber}`;
                 pageLink.target = "_blank";
-                pageLink.textContent = `Ver en página ${result.pageNumber}`;
+                pageLink.rel = "noopener noreferrer";
+                pageLink.textContent = `Ver página ${result.pageNumber}`;
 
                 resultItem.appendChild(newsTitle);
                 resultItem.appendChild(pageLink);
@@ -91,7 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Event listeners
     searchButton.addEventListener('click', performSearch);
     searchInput.addEventListener('keypress', (event) => {
         if (event.key === 'Enter') {
@@ -99,6 +101,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Cargar el índice
     loadSearchIndex();
 });
