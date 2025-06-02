@@ -7,39 +7,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let searchIndex = {}; // Aquí se cargará nuestro índice JSON
 
-    // Cargar el índice JSON
+    // Función asíncrona para cargar el índice JSON
     async function loadSearchIndex() {
-        loadingMessage.style.display = 'block';
-        noResultsMessage.style.display = 'none';
-        searchResultsDiv.innerHTML = '';
+        loadingMessage.style.display = 'block'; // Mostrar mensaje de carga
+        noResultsMessage.style.display = 'none'; // Asegurarse de que noResults esté oculto
+        searchResultsDiv.innerHTML = ''; // Limpiar resultados anteriores
 
         try {
             const response = await fetch('search_index.json');
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             searchIndex = await response.json();
             loadingMessage.style.display = 'none';
             console.log("Índice de búsqueda cargado con éxito.");
             searchInput.focus();
         } catch (error) {
-            loadingMessage.textContent = 'Error al cargar el índice de búsqueda.';
+            loadingMessage.textContent = 'Error al cargar el índice de búsqueda. Por favor, recarga la página o inténtalo más tarde.';
             loadingMessage.style.color = 'red';
-            console.error('Error:', error);
+            console.error('Error al cargar el índice de búsqueda:', error);
         }
     }
 
-    // Función para buscar
+    // Función para realizar la búsqueda
     function performSearch() {
         const query = searchInput.value.toLowerCase().trim();
         searchResultsDiv.innerHTML = '';
         noResultsMessage.style.display = 'none';
 
-        if (query.length === 0) return;
+        if (query.length === 0) {
+            return;
+        }
 
         let foundResults = false;
         const results = [];
 
         for (const pdfFilename in searchIndex) {
             const pdfData = searchIndex[pdfFilename];
+            const pdfUrl = pdfData.url;
 
             for (const pageKey in pdfData.pages) {
                 const pageText = pdfData.pages[pageKey].toLowerCase();
@@ -49,14 +54,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     foundResults = true;
                     results.push({
                         filename: pdfFilename,
-                        pageNumber: pageNumber
+                        url: pdfUrl,
+                        pageNumber: pageNumber,
                     });
                 }
             }
         }
 
         results.sort((a, b) => {
-            if (a.filename !== b.filename) return a.filename.localeCompare(b.filename);
+            if (a.filename !== b.filename) {
+                return a.filename.localeCompare(b.filename);
+            }
             return parseInt(a.pageNumber) - parseInt(b.pageNumber);
         });
 
@@ -69,7 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 newsTitle.textContent = `Noticia: ${result.filename.replace('.pdf', '').replace(/_/g, ' ')}`;
 
                 const pageLink = document.createElement('a');
-                pageLink.href = `pdfjs/web/viewer.html?file=../../noticias_pdf/${result.filename}#page=${result.pageNumber}`;
+                const encodedURL = encodeURIComponent(`https://destri13.github.io/Buscador-PDF/noticias_pdf/${result.filename}`);
+                pageLink.href = `pdfjs/web/viewer.html?file=${encodedURL}#page=${result.pageNumber}`;
                 pageLink.target = "_blank";
                 pageLink.textContent = `Ver en página ${result.pageNumber}`;
 
@@ -85,8 +94,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listeners
     searchButton.addEventListener('click', performSearch);
     searchInput.addEventListener('keypress', (event) => {
-        if (event.key === 'Enter') performSearch();
+        if (event.key === 'Enter') {
+            performSearch();
+        }
     });
 
+    // Cargar el índice
     loadSearchIndex();
 });
