@@ -7,73 +7,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let searchIndex = {}; // Aquí se cargará nuestro índice JSON
 
-    // Función asíncrona para cargar el índice JSON
+    // Cargar el índice JSON
     async function loadSearchIndex() {
-        loadingMessage.style.display = 'block'; // Mostrar mensaje de carga
-        noResultsMessage.style.display = 'none'; // Asegurarse de que noResults esté oculto
-        searchResultsDiv.innerHTML = ''; // Limpiar resultados anteriores
+        loadingMessage.style.display = 'block';
+        noResultsMessage.style.display = 'none';
+        searchResultsDiv.innerHTML = '';
 
         try {
-            // La ruta del archivo JSON, asumiendo que está en la misma carpeta que script.js
-            const response = await fetch('search_index.json'); 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            const response = await fetch('search_index.json');
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             searchIndex = await response.json();
-            loadingMessage.style.display = 'none'; // Ocultar mensaje de carga
+            loadingMessage.style.display = 'none';
             console.log("Índice de búsqueda cargado con éxito.");
-            searchInput.focus(); // Opcional: enfocar el input de búsqueda una vez cargado
+            searchInput.focus();
         } catch (error) {
-            loadingMessage.textContent = 'Error al cargar el índice de búsqueda. Por favor, recarga la página o inténtalo más tarde.';
+            loadingMessage.textContent = 'Error al cargar el índice de búsqueda.';
             loadingMessage.style.color = 'red';
-            console.error('Error al cargar el índice de búsqueda:', error);
+            console.error('Error:', error);
         }
     }
 
-    // Función para realizar la búsqueda
+    // Función para buscar
     function performSearch() {
         const query = searchInput.value.toLowerCase().trim();
-        searchResultsDiv.innerHTML = ''; // Limpiar resultados anteriores
-        noResultsMessage.style.display = 'none'; // Ocultar mensaje de no resultados
+        searchResultsDiv.innerHTML = '';
+        noResultsMessage.style.display = 'none';
 
-        if (query.length === 0) {
-            return;
-        }
+        if (query.length === 0) return;
 
         let foundResults = false;
-        const results = []; // Para almacenar resultados y luego ordenarlos/mostrarlos
+        const results = [];
 
-        // Recorre cada PDF en nuestro índice
         for (const pdfFilename in searchIndex) {
             const pdfData = searchIndex[pdfFilename];
-            const pdfUrl = pdfData.url;
 
-            // Recorre cada página dentro del PDF
             for (const pageKey in pdfData.pages) {
                 const pageText = pdfData.pages[pageKey].toLowerCase();
-                const pageNumber = pageKey.replace('page_', ''); // Extraer el número de página (ej. de "page_5" a "5")
+                const pageNumber = pageKey.replace('page_', '');
 
-                // Si la palabra clave se encuentra en el texto de la página
                 if (pageText.includes(query)) {
                     foundResults = true;
                     results.push({
                         filename: pdfFilename,
-                        url: pdfUrl,
-                        pageNumber: pageNumber,
+                        pageNumber: pageNumber
                     });
                 }
             }
         }
 
-        // Ordenar los resultados alfabéticamente por nombre de archivo, luego por número de página
         results.sort((a, b) => {
-            if (a.filename !== b.filename) {
-                return a.filename.localeCompare(b.filename);
-            }
+            if (a.filename !== b.filename) return a.filename.localeCompare(b.filename);
             return parseInt(a.pageNumber) - parseInt(b.pageNumber);
         });
 
-        // Mostrar los resultados en la interfaz
         if (results.length > 0) {
             results.forEach(result => {
                 const resultItem = document.createElement('div');
@@ -83,9 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 newsTitle.textContent = `Noticia: ${result.filename.replace('.pdf', '').replace(/_/g, ' ')}`;
 
                 const pageLink = document.createElement('a');
-                // Aquí el enlace usa la ruta relativa correcta para abrir con PDF.js en GitHub Pages
-                pageLink.href = `pdfjs/web/viewer.html?file=../noticias_pdf/${result.filename}#page=${result.pageNumber}`;
-                pageLink.target = "_blank"; // Abre el PDF en una nueva pestaña
+                pageLink.href = `pdfjs/web/viewer.html?file=../../noticias_pdf/${result.filename}#page=${result.pageNumber}`;
+                pageLink.target = "_blank";
                 pageLink.textContent = `Ver en página ${result.pageNumber}`;
 
                 resultItem.appendChild(newsTitle);
@@ -93,18 +78,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 searchResultsDiv.appendChild(resultItem);
             });
         } else {
-            noResultsMessage.style.display = 'block'; // Mostrar mensaje de no resultados
+            noResultsMessage.style.display = 'block';
         }
     }
 
-    // Event listeners para el botón y la tecla Enter
+    // Event listeners
     searchButton.addEventListener('click', performSearch);
     searchInput.addEventListener('keypress', (event) => {
-        if (event.key === 'Enter') {
-            performSearch();
-        }
+        if (event.key === 'Enter') performSearch();
     });
 
-    // Cargar el índice de búsqueda cuando la página se haya cargado
     loadSearchIndex();
 });
