@@ -82,7 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const pageLink = document.createElement('a');
                 const encodedPdfUrl = encodeURIComponent(result.url);
-                pageLink.href = `${visorBaseUrl}?file=${encodedPdfUrl}#page=${result.pageNumber}`;
+
+                // ✅ MODIFICACIÓN: se agrega #search para resaltar el texto
+                pageLink.href = `${visorBaseUrl}?file=${encodedPdfUrl}#search=${encodeURIComponent(query)}&page=${result.pageNumber}`;
                 pageLink.target = "_blank";
                 pageLink.rel = "noopener noreferrer";
                 pageLink.textContent = `Ver página ${result.pageNumber}`;
