@@ -5,9 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tesauro de Economía Digital de Bolivia</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .logo-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-container img {
+            height: 60px;
+            object-fit: contain;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #777;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid #ccc;
+            line-height: 1.5;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
+
+        <!-- Logos institucionales -->
+        <div class="logo-container">
+            <img src="logo_umsa.png" alt="Logo UMSA">
+            <img src="logo_carrera.png" alt="Logo Ciencias de la Información">
+        </div>
+
+        <!-- Título y buscador -->
         <h1>Buscador Avanzado de Noticias del Tesauro (Beta)</h1>
         <p>Escribe una palabra clave para buscar la noticia de tu interés y encontrar la página exacta.</p>
 
@@ -16,12 +47,14 @@
             <button id="searchButton">Buscar</button>
         </div>
 
+        <!-- Resultados -->
         <div id="searchResults">
             <p id="loadingMessage">Cargando índice de búsqueda... Por favor, espera.</p>
             <p id="noResultsMessage" style="display:none;">No se encontraron resultados.</p>
         </div>
     </div>
 
+    <!-- Créditos -->
     <footer>
         Proyecto realizado por: Yesenia Aliaga T. • Yhoel Flores Q. • Michael España P. • Daniel Martínez M. • Ana Martínez V.<br>
         Materia: Taller de Indización y Condensación de la Información – Docente: M.Sc. Hernán Ramos Torres<br>
