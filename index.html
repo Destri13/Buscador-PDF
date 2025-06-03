@@ -1,66 +1,81 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tesauro de Economía Digital de Bolivia</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        .logo-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tesauro de Economía Digital de Bolivia</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .logo-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
 
-        .logo-container img {
-            height: 60px;
-            object-fit: contain;
-        }
+    .logo-container img {
+      height: 90px;
+      max-width: 45%;
+      object-fit: contain;
+    }
 
-        footer {
-            text-align: center;
-            font-size: 0.75rem;
-            color: #777;
-            margin-top: 40px;
-            padding: 20px;
-            border-top: 1px solid #ccc;
-            line-height: 1.5;
-        }
-    </style>
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #555;
+      margin-top: 40px;
+      padding: 20px;
+      border-top: 1px solid #ccc;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 600px) {
+      .logo-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .logo-container img {
+        height: 70px;
+        max-width: 80%;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
+  <div class="container">
 
-        <!-- Logos institucionales -->
-        <div class="logo-container">
-            <img src="logo_umsa.png" alt="Logo UMSA">
-            <img src="logo_carrera.png" alt="Logo Ciencias de la Información">
-        </div>
-
-        <!-- Título y buscador -->
-        <h1>Buscador Avanzado de Noticias del Tesauro (Beta)</h1>
-        <p>Escribe una palabra clave para buscar la noticia de tu interés y encontrar la página exacta.</p>
-
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Ej: inflación, PIB, exportaciones...">
-            <button id="searchButton">Buscar</button>
-        </div>
-
-        <!-- Resultados -->
-        <div id="searchResults">
-            <p id="loadingMessage">Cargando índice de búsqueda... Por favor, espera.</p>
-            <p id="noResultsMessage" style="display:none;">No se encontraron resultados.</p>
-        </div>
+    <!-- Logos institucionales -->
+    <div class="logo-container">
+      <img src="logo_umsa.png" alt="Logo UMSA" />
+      <img src="logo_carrera.png" alt="Logo Ciencias de la Información" />
     </div>
 
-    <!-- Créditos -->
-    <footer>
-        Proyecto realizado por: Yesenia Aliaga T. • Yhoel Flores Q. • Michael España P. • Daniel Martínez M. • Ana Martínez V.<br>
-        Materia: Taller de Indización y Condensación de la Información – Docente: M.Sc. Hernán Ramos Torres<br>
-        CIENCIAS DE LA INFORMACIÓN – Universidad Mayor de San Andrés
-    </footer>
+    <!-- Título y buscador -->
+    <h1>Buscador Avanzado de Noticias del Tesauro (Beta)</h1>
+    <p>Escribe una palabra clave para buscar la noticia de tu interés y encontrar la página exacta.</p>
 
-    <script src="script.js"></script>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Ej: inflación, PIB, exportaciones..." />
+      <button id="searchButton">Buscar</button>
+    </div>
+
+    <!-- Resultados -->
+    <div id="searchResults">
+      <p id="loadingMessage">Cargando índice de búsqueda... Por favor, espera.</p>
+      <p id="noResultsMessage" style="display: none;">No se encontraron resultados.</p>
+    </div>
+  </div>
+
+  <!-- Créditos -->
+  <footer>
+    Proyecto realizado por: Yesenia Aliaga T. • Yhoel Flores Q. • Michael España P. • Daniel Martínez M. • Ana Martínez V.<br>
+    Materia: Taller de Indización y Condensación de la Información – Docente: M.Sc. Hernán Ramos Torres<br>
+    CIENCIAS DE LA INFORMACIÓN – Universidad Mayor de San Andrés
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
